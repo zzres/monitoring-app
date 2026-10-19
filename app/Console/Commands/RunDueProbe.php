@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\PerformProbeCheck;
 use App\Models\Probe;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class RunDueProbe extends Command
 {
@@ -34,13 +35,27 @@ class RunDueProbe extends Command
             ->get();
 
         $dispatched = 0;
+        $errors = [];
 
         foreach ($probes as $probe) {
             if ($probe->isDue()) {
+                continue;
+            }
+
+            try {
                 PerformProbeCheck::dispatch($probe);
                 $dispatched++;
+            } catch (\Throwable $e) {
+                $errors[] = "{$probe->name} : {$e->getMessage()}";
             }
         }
+
+        Cache::put('scheduler:last_run', [
+            'at' => now()->toIso8601String(),
+            'total' => $probes->count(),
+            'dispatched' => $dispatched,
+            'errors' => $errors,
+        ], now()->addDay());
 
         $this->info("{$dispatched} vérification(s) planifiée(s).");
 

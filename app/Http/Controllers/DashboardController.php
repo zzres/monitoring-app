@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -24,6 +25,7 @@ class DashboardController extends Controller
             'down' => $down,
             'downProbes' => $downProbes,
             'probes' => $probes->sortByDesc(fn($probe) => $probe->latestCheck?->checked_at),
+            'schedulerStatus' => Cache::get('scheduler:last_run'),
         ]);
     }
 }

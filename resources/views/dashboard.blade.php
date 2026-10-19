@@ -2,6 +2,20 @@
     <div class="max-w-4xl mx-auto px-4 py-8">
         <h1 class="text-2xl font-bold mb-6">Tableau de bord</h1>
 
+        <div class="bg-white rounded-lg shadow p-4 mb-6 text-sm text-gray-600">
+            @if ($schedulerStatus)
+                Dernière exécution du scheduler :
+                <strong>{{ \Carbon\Carbon::parse($schedulerStatus['at'])->diffForHumans() }}</strong>
+                — {{ $schedulerStatus['dispatched'] }} vérification(s) lancée(s)
+                sur {{ $schedulerStatus['total'] }} sonde(s) active(s).
+                @foreach ($schedulerStatus['errors'] as $error)
+                    <p class="text-red-600 mt-1">{{ $error }}</p>
+                @endforeach 
+            @else 
+                Aucune exécution du scheduler enregistrée récemment.
+            @endif 
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div class="bg-white rounded-lg shadow p-5">
                 <p class="text-sm text-gray-500">Sondes surveillées</p>
