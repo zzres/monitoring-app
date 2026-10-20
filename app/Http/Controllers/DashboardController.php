@@ -26,6 +26,7 @@ class DashboardController extends Controller
             'downProbes' => $downProbes,
             'probes' => $probes->sortByDesc(fn($probe) => $probe->latestCheck?->checked_at),
             'schedulerStatus' => Cache::get('scheduler:last_run'),
+            'lastDispatch' => Cache::get('scheduler:last_dispatch'),
         ]);
     }
 }

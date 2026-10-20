@@ -57,6 +57,13 @@ class RunDueProbe extends Command
             'errors' => $errors,
         ], now()->addDay());
 
+        if ($dispatched > 0) {
+            Cache::put('scheduler:last_dispatch', [
+                'at' => now()->toIso8601String(),
+                'count' => $dispatched,
+            ], now()->addDay());
+        }
+
         $this->info("{$dispatched} vérification(s) planifiée(s).");
 
         return self::SUCCESS;

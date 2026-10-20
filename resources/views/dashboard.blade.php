@@ -4,10 +4,15 @@
 
         <div class="bg-white rounded-lg shadow p-4 mb-6 text-sm text-gray-600">
             @if ($schedulerStatus)
-                Dernière exécution du scheduler :
+                Scheduler actif, dernier passage :
                 <strong>{{ \Carbon\Carbon::parse($schedulerStatus['at'])->diffForHumans() }}</strong>
-                — {{ $schedulerStatus['dispatched'] }} vérification(s) lancée(s)
-                sur {{ $schedulerStatus['total'] }} sonde(s) active(s).
+                @if ($lastDispatch)
+                    Dernières vérifications lancées :
+                    <strong>{{ \Carbon\Carbon::parse($lastDispatch['at'])->diffForHumans() }}</strong>
+                    ({{ $lastDispatch['count'] }} sonde(s)).
+                @else 
+                    Aucune vérification lancée depuis le démarrage.
+                @endif                 
                 @foreach ($schedulerStatus['errors'] as $error)
                     <p class="text-red-600 mt-1">{{ $error }}</p>
                 @endforeach 
