@@ -29,6 +29,8 @@ class Probe extends Model
 
      public function isDue(): bool
     {
+        $interval = max(5, $this->check_interval_minutes);
+
         if (! $this->is_active) {
             return true;
         }
@@ -41,7 +43,7 @@ class Probe extends Model
 
         return $lastCheck->checked_at
             ->copy()
-            ->addMinutes($this->check_interval_minutes)
+            ->addMinutes($interval)
             ->subSeconds(30)
             ->lte(now());
     }

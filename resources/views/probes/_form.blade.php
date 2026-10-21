@@ -33,7 +33,7 @@
 
 <div class="mb-4">
     <label for="check_interval_minutes" class="block font-medium mb-2">Intervalle de vérification (minutes)</label>
-    <input type="number" name="check_interval_minutes" id="check_interval_minutes" min="1" max="1440"
+    <input type="number" name="check_interval_minutes" id="check_interval_minutes" min="5" max="1440"
            value="{{ old('check_interval_minutes', $probe->check_interval_minutes ?? 5) }}"
            class="w-full border rounded-lg p-3 @error('check_interval_minutes') border-red-500 @enderror">
     @error('check_interval_minutes')

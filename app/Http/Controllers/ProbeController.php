@@ -35,6 +35,10 @@ class ProbeController extends Controller
      */
     public function store(Request $request)
     {
+        if (Probe::count() >= 30) {
+            return back()->withErrors(['name' => 'La démo a atteint sa capacité maximale de sondes.'])->withInput();
+        } 
+
         if (auth()->user()->probes()->count() >= 10) {
             return back()->withErrors(['name' => 'Limite de 10 sondes atteinte pour cette démo.'])->withInput();
         }
@@ -43,7 +47,7 @@ class ProbeController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|in:http,tcp',
             'target' => ['required', 'string', 'max:255', new PublicTarget((string) $request->input('type'))],
-            'check_interval_minutes' => 'required|integer|min:1|max:1440',
+            'check_interval_minutes' => 'required|integer|min:5|max:1440',
         ]);
 
         auth()->user()->probes()->create($validated);
@@ -87,7 +91,7 @@ class ProbeController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|in:http,tcp',
             'target' => ['required', 'string', 'max:255', new PublicTarget((string) $request->input('type'))],
-            'check_interval_minutes' => 'required|integer|min:1|max:1440',
+            'check_interval_minutes' => 'required|integer|min:5|max:1440',
             'is_active' => 'nullable|boolean',
         ]);
 
