@@ -1,6 +1,6 @@
 # 📡 Monitoring App — Laravel
 
-Un outil de supervision de disponibilité : chaque utilisateur déclare des sondes (sites web, services TCP), l'application les vérifie automatique, conserve l'historique, trace l'évolution du temps de réponse et envoie une alerte lors d'un changement d'état.
+Un outil de supervision de disponibilité : chaque utilisateur déclare des sondes (sites web, services TCP), l'application les vérifie automatiquement, conserve l'historique, trace l'évolution du temps de réponse et envoie une alerte lors d'un changement d'état.
 
 ## 🔗 Démo en ligne
 
@@ -10,21 +10,21 @@ Un outil de supervision de disponibilité : chaque utilisateur déclare des sond
 
 | Email | Mot de passe |
 |---|---|
-|demo@example.com | password |
+| demo@example.com | password |
 
-Le compte contient trois sondes avec 48 heures d'historique, dont un incident simulé. Le bouton **"Vérifier maintenant "** de chaque sonde lance une vraie vérification en direct.
+Le compte contient trois sondes avec 48 heures d'historique, dont un incident simulé. Le bouton **« Vérifier maintenant »** de chaque sonde lance une vraie vérification en direct.
 
-### ⚠️ Limites de la démo (hébergement grauit)
+### ⚠️ Limites de la démo (hébergement gratuit)
 
 - Le service se met en veille après 15 minutes sans visite, et le scheduler s'arrête avec lui. Il repart à la visite suivante (environ une minute de délai).
 - Les emails d'alerte sont écrits dans les logs, car le plan gratuit bloque les ports SMTP.
 - Un usage réel demande un worker permanent (service payant d'environ 7 $/mois, ou un petit serveur) et un fournisseur d'emails par API.
 
-## ✨ Fonctionnalités 
+## ✨ Fonctionnalités
 
 - Sondes **HTTP** (code de statut, temps de réponse) et **TCP** (ouverture de port `host:port`)
-- Intervalle de vérification configurable par sonde, activation/désactivation sans perte d'historique 
-- Vérifications automatiques et récurrentes (Schedule + Jobs Laravel)
+- Intervalle de vérification configurable par sonde (5 minutes minimum), activation/désactivation sans perte d'historique
+- Vérifications automatiques et récurrentes (Scheduler + Jobs Laravel)
 - **Alertes email uniquement lors d'un changement d'état** (panne ou retour à la normale), jamais à chaque vérification
 - Dashboard : compteurs, sondes en panne mises en avant, état du scheduler
 - Page de détail : taux de disponibilité, graphique du temps de réponse (Chart.js), historique avec message d'erreur
@@ -34,7 +34,7 @@ Le compte contient trois sondes avec 48 heures d'historique, dont un incident si
 
 - **Backend** : Laravel 12, PHP 8.2
 - **Frontend** : Blade, Tailwind CSS, Chart.js
-- **Base de donées** : PostgreSQL (Neon)
+- **Base de données** : PostgreSQL (Neon)
 - **Authentification** : Laravel Breeze
 - **Déploiement** : Docker, Render
 
@@ -45,17 +45,17 @@ Le compte contient trois sondes avec 48 heures d'historique, dont un incident si
 - **Un seul scheduler pour des intervalles variables** : une commande exécutée chaque minute décide quelles sondes sont dues, plutôt qu'une tâche planifiée par sonde.
 - **Jobs uniques par sonde** (`ShouldBeUnique`) : empêche d'empiler des vérifications en double si un worker prend du retard.
 - **Protection contre la SSRF** : une règle de validation refuse les cibles qui résolvent vers des adresses privées ou réservées (localhost, réseaux internes, métadonnées cloud), et les redirections ne sont pas suivies.
-- **Limitation de débit** sur le bouton de vérification manuelle, et platfond de sondes par compte.
+- **Garde-fous pour une démo publique** : limitation de débit sur la vérification manuelle et sur les inscriptions, plafond de sondes (par compte et global), intervalle minimum de 5 minutes.
 - **Table d'historique immuable** : `checks` n'a ni `created_at` ni `updated_at`, seulement `checked_at`, puisqu'un résultat de vérification ne se modifie jamais.
-- **Seeders idempotents**, pour pouvoir le déploiement sans doublons.
+- **Seeders idempotents**, pour pouvoir relancer le déploiement sans doublons.
 
-## 📸 Aperçu 
+## 📸 Aperçu
 
-![Dashboard](IMG/Dashboard.png)
-![Détail-1](IMG/Détail-1.png)
-![Détail-2](IMG/Détail-2.png)
+![Dashboard](docs/screenshots/dashboard.png)
+![Détail d'une sonde](docs/screenshots/detail-1.png)
+![Historique des vérifications](docs/screenshots/detail-2.png)
 
-## ⚙️ Installation locale 
+## ⚙️ Installation locale
 
 ```bash
 git clone https://github.com/zzres/monitoring-app.git
@@ -75,14 +75,14 @@ npm run build
 php artisan serve
 ```
 
-Pour activer les vérifications automatiques, lance dans deux autres terminaux : 
+Pour activer les vérifications automatiques, lance dans deux autres terminaux :
 
 ```bash
-php artisan scheldule:work
+php artisan schedule:work
 php artisan queue:work
 ```
 
-## 👤 Auteur 
+## 👤 Auteur
 
-Développé par Alvain Junior Saminzéré Zéro
+Développé par Alvain Junior Saminzere Zero
 Retrouvez-moi sur [Codeur.com](https://www.codeur.com/-alvainz23) pour vos projets de développement web.
