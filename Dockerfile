@@ -1,16 +1,21 @@
-FROM php:8.2-apache
+FROM php:8.2.35-apache
 
 #Installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y \
+    ca-certificates \
     libpq-dev \
     libzip-dev \
     unzip \
     git \
     curl \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    && docker-php-ext-install pdo pdo_pgsql zip \
+    && update-ca-certificates
+
+# Réduction de la surface d'attaque : ces applications n'utilisent pas cette fonctionnalité
+RUN echo "session.upload_progress.enabled=0" > /usr/local/etc/php/conf.d/zz-hardening.ini
 
 # Installer les dépendances système nécessaires
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs
 
 # Activer le module Apache pour les URLs propres de Laravel
